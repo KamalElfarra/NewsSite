@@ -6,6 +6,12 @@ use App\Http\Controllers\ApiController\CategoryController;
 use App\Http\Controllers\ApiController\EconomyController;
 use App\Http\Controllers\ApiController\MoreController;
 use App\Http\Controllers\ApiController\PoliticController;
+use App\Http\Controllers\ApiController\PopularController;
+use App\Http\Controllers\ApiController\SiteController;
+use App\Http\Controllers\ApiController\SportController;
+use App\Http\Controllers\ApiController\TechnologyController;
+use App\Http\Controllers\ApiController\TypeController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -66,5 +72,59 @@ Route::controller(PoliticController::class)->group(function(){
     Route::post("update/politic/{id}","update");
     Route::get("delete/politic/{id}","destroy");
     Route::get("single_page/politic","single");
+
+});
+
+Route::controller(PopularController::class)->group(function(){
+
+    Route::get("get_index/popular","index");
+    Route::get("create/popular","create");
+    Route::post("store/popular","store");
+    Route::get("info/popular/{id}","info");
+    Route::get("edit/popular/{id}","edit");
+    Route::get("info/popular/{id}","info");
+    Route::post("update/popular/{id}","update");
+    Route::get("delete/popular/{id}","destroy");
+    Route::get("single_page/popular","single");
+
+});
+
+Route::controller(SiteController::class)->group(function(){
+
+    Route::get("index/site","index");
+
+});
+
+Route::controller(SportController::class)->group(function(){
+
+    Route::get("get_index/sport","index");
+    Route::post("store/sport","store");
+    Route::get("info/sport/{id}","info");
+    Route::get("edit/sport/{id}","edit");
+    Route::post("update/sport/{id}","update");
+    Route::get("delete/sport/{id}","destroy");
+    Route::get("info/sport/{id}","info");
+    Route::get("single_page/sport","single");
+
+});
+
+
+Route::controller(TechnologyController::class)->group(function(){
+
+    Route::get("get_index/technology","index");
+    Route::post("store/technology","store");
+    Route::get("info/technology/{id}","info");
+    Route::get("edit/technology/{id}","edit");
+    Route::post("update/technology/{id}","update");
+    Route::get("delete/technology/{id}","destroy");
+    Route::get("info/technology/{id}","info");
+    Route::get("single_page/technology","single");
+
+});
+
+Route::controller(TypeController::class)->group(function(){
+
+    Route::get("get_index/type","index");
+    Route::post("store/type","store");
 
 });

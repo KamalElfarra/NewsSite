@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ApiController;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\Sport;
 use App\Models\Category;
@@ -17,20 +19,13 @@ class SportController extends Controller
     public function index()
     {
         $get_data = Sport::paginate(5);
-        return view("sport.table",compact("get_data"));
+        return Response()->json([
+          $get_data,
+          "msg"=>"the data was returned successfully"
+
+        ],200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $category = Category::all();
-        return view("sport.create",compact("category"));
-
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -43,15 +38,18 @@ class SportController extends Controller
         $sport = new Sport();
 
         $photo = time(). "." . $request->photo->extension();
-        $path = $request->photo->move("images\Sport",$photo);
+        $path = $request->photo->move("Api_Images",$photo);
 
         $sport->title = $request->title;
         $sport->content = $request->content;
         $sport->photo = $path;
         $sport->category_id = $request->category_id;
         $sport->save();
-        return redirect("/create/sport");
+        return Response()->json([
+          $sport,
+          "msg"=>"the data was stored successfully"
 
+        ],200);
     }
 
     /**
@@ -65,7 +63,16 @@ class SportController extends Controller
         $info = Sport::where("id",$id)->first();
         $sport = Sport::take(3)->get();
         $related = Sport::orderBy("id","desc")->take(3)->get();
-        return view("sport.info",compact("info","sport","related"));
+
+        $array = [
+            "data" => $info,$sport,$related,
+            "msg" => "the data info is returned"
+        ];
+
+        // return response()->json(['error' => 'Data not found'], 404);
+
+
+        return response($array,200);
 
     }
 
@@ -78,8 +85,14 @@ class SportController extends Controller
     public function edit($id)
     {
         $edit = Sport::where("id",$id)->first();
-        $all = Category::all();
-        return view("sport.edit",compact("edit","all"));
+        $sport = Category::where("name","الرياضة")->first();
+
+        $array = [
+          "data" => $edit,$sport,
+          "msg" => "this is the for edit"
+        ];
+
+        return response($array,200);
     }
 
     /**
@@ -94,15 +107,19 @@ class SportController extends Controller
         $update = Sport::where("id",$id)->first();
 
         $photo = time(). "." . $request->photo->extension();
-        $path = $request->photo->move("images\Sport",$photo);
+        $path = $request->photo->move("Api_Images",$photo);
 
         $update->title = $request->title;
         $update->content = $request->content;
         $update->photo = $path;
         $update->category_id = $request->category_id;
         $update->save();
-        return redirect("/view/sport");
+        $array = [
+          "data" => $update,
+          "msg" => "the data was updating on success"
+        ];
 
+        return response($array,200);
     }
 
     /**
@@ -113,11 +130,16 @@ class SportController extends Controller
      */
     public function destroy($id)
     {
-        
+
         $delete = Sport::where("id",$id)->first();
         $delete->destroy($id);
         $delete->save();
-        return redirect("/view/sport");
+        $array = [
+          "data" => $delete,
+          "msg" => "the data was deleted"
+        ];
+
+        return response($array,200);
 
     }
 
@@ -127,7 +149,11 @@ class SportController extends Controller
         $all = Sport::paginate(4);
         $latest = Sport::latest()->first();
 
-        return view("sport.single_page",compact("sport","all","latest"));
+        $array = [
+          "data" => $sport,$all,$latest,
+          "msg" => "this is the data for single page"
+        ];
 
+        return response($array,200);
     }
 }

@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ApiController;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\Technology;
 use App\Models\Category;
@@ -17,20 +19,12 @@ class TechnologyController extends Controller
     public function index()
     {
         $get_data = Technology::paginate(5);
-        return view("technology.table",compact("get_data"));
+        return Response()->json([
+          $get_data,
+          "msg"=>"the data is returned successfully"
+        ],200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $category = Category::all();
-        return view("technology.create",compact("category"));
-
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -43,15 +37,17 @@ class TechnologyController extends Controller
         $tech = new Technology();
 
         $photo = time(). "." . $request->photo->extension();
-        $path = $request->photo->move("images\Technology",$photo);
+        $path = $request->photo->move("Api_Images",$photo);
 
         $tech->title = $request->title;
         $tech->content = $request->content;
         $tech->photo = $path;
         $tech->category_id = $request->category_id;
         $tech->save();
-        return redirect("/create/technology");
-
+        return Response()->json([
+          $tech,
+          "msg"=>"the data is stored successfully"
+        ],200);
     }
 
     /**
@@ -66,7 +62,11 @@ class TechnologyController extends Controller
         $technology = Technology::take(3)->get();
         $related = Technology::orderBy('id','desc')->take(3)->get();
 
-        return view("technology.info",compact("info","technology","related"));
+        return Response()->json([
+          $info,$technology,$related,
+          "msg"=>"this is info data "
+        ],200);
+
     }
 
     /**
@@ -78,9 +78,11 @@ class TechnologyController extends Controller
     public function edit($id)
     {
         $edit = Technology::where("id",$id)->first();
-        $all = Category::all();
-        return view("technology.edit",compact("edit","all"));
-
+        $first = Category::where("name","التكنولوجيا")->first();
+        return Response()->json([
+          $edit,$first,
+          "msg"=>"this is the data for edit "
+        ],200);
     }
 
     /**
@@ -95,15 +97,17 @@ class TechnologyController extends Controller
         $update = Technology::where("id",$id)->first();
 
         $photo = time(). "." . $request->photo->extension();
-        $path = $request->photo->move("images\Technology",$photo);
+        $path = $request->photo->move("Api_Images",$photo);
 
         $update->title = $request->title;
         $update->content = $request->content;
         $update->photo = $path;
         $update->category_id = $request->category_id;
         $update->save();
-        return redirect("/view/technology");
-
+        return Response()->json([
+          $update,
+          "msg"=>"the data was updating on success "
+        ],200);
     }
 
     /**
@@ -117,8 +121,10 @@ class TechnologyController extends Controller
         $delete = Technology::where("id",$id)->first();
         $delete->destroy($id);
         $delete->save();
-        return redirect("/view/technology");
-
+        return Response()->json([
+          $delete,
+          "msg"=>"the data was deleted successfully"
+        ],200);
     }
 
     public function single(){
@@ -127,7 +133,10 @@ class TechnologyController extends Controller
         $all = Technology::paginate(4);
         $latest = Technology::latest()->first();
 
-        return view("technology.single_page",compact("technology","all","latest"));
+        return Response()->json([
+          $technology,$all,$latest,
+          "msg"=>"this is the data for single page"
+        ],200);
 
     }
 }

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ApiController;
 
+use App\Http\Controllers\Controller;
 use App\Models\Popular;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -16,18 +17,11 @@ class PopularController extends Controller
     public function index()
     {
         $get_all = Popular::paginate(5);
-       return view("popular.table",compact("get_all"));
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $all = Category::all();
-        return view("popular.create",compact("all"));
+        return response()->json([
+          $get_all,
+          "msg" => "the data was returned successfully"
+        ],200);
     }
 
     /**
@@ -41,14 +35,18 @@ class PopularController extends Controller
         $popular = new Popular();
 
         $photo = time(). "." . $request->photo->extension();
-        $path = $request->photo->move("images\Popular",$photo);
+        $path = $request->photo->move("Api_Images",$photo);
 
         $popular->title = $request->title;
         $popular->content = $request->content;
         $popular->photo = $path;
         $popular->category_id = $request->category_id;
         $popular->save();
-        return redirect("/create/popular");
+
+        return response()->json([
+          $popular,
+          "msg" => "the data was stored successfully"
+        ],200);
 
     }
 
@@ -63,7 +61,15 @@ class PopularController extends Controller
         $info = Popular::where("id",$id)->first();
         $get_data = Popular::take(3)->get();
         $related = Popular::orderBy("id","desc")->take(3)->get();
-        return view("popular.info",compact("info","get_data","related"));
+
+        return response()->json([
+
+          $info,$get_data,$related,
+          "msg" => "the data was returned successfully"
+
+        ],200);
+
+
     }
 
     /**

@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ApiController;
+
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Models\Politic;
@@ -41,23 +43,21 @@ class SiteController extends Controller
         $get_more = More::orderBy('id', 'desc')->take(8)->get();
 
 
+        $array = [
+
+          "data"=> $politic_first,$economy_first,
+          $sport_first,$technology_first,$politic_skip,
+          $economy_skip,$sport_skip,$technology_skip,
+          $politic_last,$economy_last,$sport_last,$technology_last,
+          $order_by_tech,$order_by_politic,$order_by_economy,
+          $order_by_sport,$order_by_popular,$get_more,
+
+          "msg" => "the data was returned on success"
+
+        ];
 
 
-        return view("site.index",compact("politic_first","economy_first",
-        "sport_first","technology_first","politic_skip",
-        "economy_skip","sport_skip","technology_skip","politic_last",
-        "economy_last","sport_last","technology_last","order_by_tech",
-        "order_by_politic","order_by_economy","order_by_sport",
-        "order_by_popular","get_more"));
+        return response($array,200);
 
     }
-
-
-    public function info($id){
-
-        $info = Politic::where("category_id",$id)->first();
-        return view("site.info",compact("info"));
-
-    }
-
 }

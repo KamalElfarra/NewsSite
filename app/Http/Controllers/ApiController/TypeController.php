@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ApiController;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\Type;
 use App\Models\Category;
@@ -17,18 +19,13 @@ class TypeController extends Controller
     public function index()
     {
         $type = Type::all();
-        return view("type.table",compact("type"));
+        return Response()->json([
+          $type,
+          "msg" => "data index Type"
+        ],200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return view("type.create");
-    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -41,8 +38,10 @@ class TypeController extends Controller
         $type = new Type();
         $type->name = $request->name;
         $type->save();
-        return redirect("/view/type");
-
+        return Response()->json([
+          $type,
+          "msg" => "the data was stored successfully"
+        ],200);
     }
 
     /**

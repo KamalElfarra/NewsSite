@@ -21,10 +21,8 @@ class PoliticController extends Controller
         $get_all = Politic::paginate(5);
 
         return response()->json([
-
             $get_all,
             "msg"=> "the data was returned"
-
         ],200);
     }
 
